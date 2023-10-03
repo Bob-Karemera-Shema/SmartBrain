@@ -15,8 +15,8 @@ function App() {
   };
 
   const onButtonSubmit = () => {
-    fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/versions/" + MODEL_VERSION_ID + "/outputs", requestOptions)
-      .then(response => response.JSON())
+    fetch("https://api.clarifai.com/v2/models/face-detection/outputs", clarifaiRequestOptions(input))
+      .then(response => console.log(response))
       .catch(error => console.log('error', error));
   };
 
@@ -27,19 +27,16 @@ function App() {
       <Logo />
       <Rank />
       <ImageLinkForm onInputChange={onInputChange} onButtonSubmit={onButtonSubmit} />
-      <FaceRecognition />
+      <FaceRecognition imageURL={input}/>
     </div>
   );
 }
 
 const clarifaiRequestOptions = (imageURL) => {
-  const PAT = 'YOUR_PAT_HERE';
+  const PAT = '98e42e8a626b46ffa9ededb80f51c34c';
   const USER_ID = 'clarifai';
   const APP_ID = 'main';
-  // Change these to whatever model and image URL you want to use
-  const MODEL_ID = 'face-detection';
-  const MODEL_VERSION_ID = '6dc7e46bc9124c5c8824be4822abe105';
-  const IMAGE_URL = 'https://samples.clarifai.com/metro-north.jpg';
+  const IMAGE_URL = imageURL;
 
   const raw = JSON.stringify({
     "user_app_id": {

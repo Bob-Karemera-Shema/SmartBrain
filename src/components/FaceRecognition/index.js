@@ -1,7 +1,9 @@
-export default function FaceRecognition() {
+export default function FaceRecognition({ imageURL }) {
     return (
-        <div className="center">
-            <img src=""/>
+        <div className="center ma">
+            <div className="absolute mt2">
+                <img src={imageURL} alt="input" width='500px' height='auto'/>
+            </div>
         </div>
     );
 }
