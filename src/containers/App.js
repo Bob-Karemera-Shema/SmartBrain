@@ -9,14 +9,67 @@ import FaceRecognition from '../components/FaceRecognition';
 
 function App() {
   const [input, setInput] = useState('');
+  const [box, setBox] = useState({});
+
+  const clarifaiRequest = (imageURL) => {
+    const PAT = '98e42e8a626b46ffa9ededb80f51c34c';
+    const USER_ID = 'b9f8884cvz0m';
+    const APP_ID = 'smart-brain';
+    const IMAGE_URL = imageURL;
+
+    const raw = JSON.stringify({
+      "user_app_id": {
+        "user_id": USER_ID,
+        "app_id": APP_ID
+      },
+      "inputs": [
+        {
+          "data": {
+            "image": {
+              "url": IMAGE_URL
+            }
+          }
+        }
+      ]
+    });
+
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Key ' + PAT
+      },
+      body: raw
+    };
+
+    return requestOptions;
+  };
+
+  const calculateFaceLocation = (data) => {
+    const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
+    const image = document.getElementById("input-imaage");
+    const width = Number(image.width);
+    const height = Number(image.height);
+
+    return {
+      leftCol: clarifaiFace.left_col * width,
+      topRow: clarifaiFace.top_row * height,
+      rightCol: width - (clarifaiFace.right_col * width),
+      bottomRow: height - (clarifaiFace.bottom_row * height)
+    };
+  };
+
+  const displayFaceBox = (boxObject) => {
+    setBox(boxObject);
+  };
 
   const onInputChange = (event) => {
     setInput(event.target.value);
   };
 
   const onButtonSubmit = () => {
-    fetch("https://api.clarifai.com/v2/models/face-detection/outputs", clarifaiRequestOptions(input))
-      .then(response => console.log(response))
+    fetch("https://api.clarifai.com/v2/models/face-detection/outputs", clarifaiRequest(input))
+      .then(response => displayFaceBox(calculateFaceLocation(response.json())))
       .catch(error => console.log('error', error));
   };
 
@@ -27,43 +80,9 @@ function App() {
       <Logo />
       <Rank />
       <ImageLinkForm onInputChange={onInputChange} onButtonSubmit={onButtonSubmit} />
-      <FaceRecognition imageURL={input}/>
+      <FaceRecognition box={box} imageURL={input} />
     </div>
   );
 }
-
-const clarifaiRequestOptions = (imageURL) => {
-  const PAT = '98e42e8a626b46ffa9ededb80f51c34c';
-  const USER_ID = 'clarifai';
-  const APP_ID = 'main';
-  const IMAGE_URL = imageURL;
-
-  const raw = JSON.stringify({
-    "user_app_id": {
-      "user_id": USER_ID,
-      "app_id": APP_ID
-    },
-    "inputs": [
-      {
-        "data": {
-          "image": {
-            "url": IMAGE_URL
-          }
-        }
-      }
-    ]
-  });
-
-  const requestOptions = {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Key ' + PAT
-    },
-    body: raw
-  };
-
-  return requestOptions;
-};
 
 export default App;
