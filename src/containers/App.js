@@ -6,6 +6,7 @@ import ImageLinkForm from '../components/ImageLinkForm';
 import Rank from '../components/Rank';
 import ParticlesContainer from '../components/Particles';
 import FaceRecognition from '../components/FaceRecognition';
+import SignIn from '../components/SignIn';
 
 function App() {
   const [input, setInput] = useState('');
@@ -47,7 +48,7 @@ function App() {
 
   const calculateFaceLocation = (data) => {
     const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
-    const image = document.getElementById("input-imaage");
+    const image = document.getElementById("input-image");
     const width = Number(image.width);
     const height = Number(image.height);
 
@@ -69,7 +70,8 @@ function App() {
 
   const onButtonSubmit = () => {
     fetch("https://api.clarifai.com/v2/models/face-detection/outputs", clarifaiRequest(input))
-      .then(response => displayFaceBox(calculateFaceLocation(response.json())))
+      .then(response => response.json())
+      .then(data => displayFaceBox(calculateFaceLocation(data)))
       .catch(error => console.log('error', error));
   };
 
@@ -78,6 +80,7 @@ function App() {
       <ParticlesContainer className="particles" />
       <Navigation />
       <Logo />
+      <SignIn />
       <Rank />
       <ImageLinkForm onInputChange={onInputChange} onButtonSubmit={onButtonSubmit} />
       <FaceRecognition box={box} imageURL={input} />
