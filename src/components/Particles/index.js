@@ -47,7 +47,7 @@ function ParticlesContainer() {
                         value: 80,
                     },
                     opacity: {
-                        value: 0.7,
+                        value: 0.1,
                     },
                     size: {
                         value: { min: 1, max: 5 },

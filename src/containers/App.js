@@ -7,10 +7,22 @@ import Rank from '../components/Rank';
 import ParticlesContainer from '../components/Particles';
 import FaceRecognition from '../components/FaceRecognition';
 import SignIn from '../components/SignIn';
+import SignUp from '../components/SignUp';
 
 function App() {
   const [input, setInput] = useState('');
   const [box, setBox] = useState({});
+  const [route, setRoute] = useState("signin");
+  const [isSignedIn, setSignIn] = useState(false);
+
+  const onRouteChange = (curRoute) => {
+    if (curRoute === "home") {
+      setSignIn(true);
+    } else {
+      setSignIn(false);
+    }
+    setRoute(curRoute);
+  };
 
   const clarifaiRequest = (imageURL) => {
     const PAT = '98e42e8a626b46ffa9ededb80f51c34c';
@@ -78,12 +90,19 @@ function App() {
   return (
     <div className="App">
       <ParticlesContainer className="particles" />
-      <Navigation />
+      <Navigation signedIn={isSignedIn} onRouteChange={onRouteChange} />
       <Logo />
-      <SignIn />
-      <Rank />
-      <ImageLinkForm onInputChange={onInputChange} onButtonSubmit={onButtonSubmit} />
-      <FaceRecognition box={box} imageURL={input} />
+      {
+        route === "home" ?
+          <div>
+            <Rank />
+            <ImageLinkForm onInputChange={onInputChange} onButtonSubmit={onButtonSubmit} />
+            <FaceRecognition box={box} imageURL={input} />
+          </div> :
+          (
+            route === "signin" ? <SignIn onRouteChange={onRouteChange} /> : <SignUp onRouteChange={onRouteChange} />
+          )
+      }
     </div>
   );
 }
