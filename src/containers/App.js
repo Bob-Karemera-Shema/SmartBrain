@@ -10,10 +10,15 @@ import SignIn from '../components/SignIn';
 import SignUp from '../components/SignUp';
 
 function App() {
+  const [user, setUser] = useState({});
   const [input, setInput] = useState('');
   const [box, setBox] = useState({});
   const [route, setRoute] = useState("signin");
   const [isSignedIn, setSignIn] = useState(false);
+
+  const loadUser = (user) => {
+    setUser(user);
+  };
 
   const onRouteChange = (curRoute) => {
     if (curRoute === "home") {
@@ -95,12 +100,13 @@ function App() {
       {
         route === "home" ?
           <div>
-            <Rank />
+            <Rank name={user.name} entries={user.entries}/>
             <ImageLinkForm onInputChange={onInputChange} onButtonSubmit={onButtonSubmit} />
             <FaceRecognition box={box} imageURL={input} />
           </div> :
           (
-            route === "signin" ? <SignIn onRouteChange={onRouteChange} /> : <SignUp onRouteChange={onRouteChange} />
+          route === "signin" ? <SignIn onRouteChange={onRouteChange} loadUser={loadUser} /> : 
+            <SignUp onRouteChange={onRouteChange} loadUser={loadUser} />
           )
       }
     </div>
