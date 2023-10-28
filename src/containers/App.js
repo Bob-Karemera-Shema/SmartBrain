@@ -85,10 +85,25 @@ function App() {
     setInput(event.target.value);
   };
 
-  const onButtonSubmit = () => {
+  const onPictureSubmit = () => {
     fetch("https://api.clarifai.com/v2/models/face-detection/outputs", clarifaiRequest(input))
       .then(response => response.json())
-      .then(data => displayFaceBox(calculateFaceLocation(data)))
+      .then(data => {
+        displayFaceBox(calculateFaceLocation(data));
+        if(data) {
+          fetch('http://localhost:3030/image', {
+            method: 'put',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+              id: user.id
+            })
+            .then(res => res.json())
+            .then(count => {
+              setUser(Object.assign(user, { entries: count }));
+            })
+          });
+        }
+      })
       .catch(error => console.log('error', error));
   };
 
@@ -101,7 +116,7 @@ function App() {
         route === "home" ?
           <div>
             <Rank name={user.name} entries={user.entries}/>
-            <ImageLinkForm onInputChange={onInputChange} onButtonSubmit={onButtonSubmit} />
+            <ImageLinkForm onInputChange={onInputChange} onPictureSubmit={onPictureSubmit} />
             <FaceRecognition box={box} imageURL={input} />
           </div> :
           (
