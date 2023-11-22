@@ -99,7 +99,7 @@ function App() {
             })
             .then(res => res.json())
             .then(count => {
-              setUser(Object.assign(user, { entries: count }));
+              setUser({...user, entries: count});
             })
           });
         }
