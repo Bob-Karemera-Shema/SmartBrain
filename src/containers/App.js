@@ -25,6 +25,9 @@ function App() {
       setSignIn(true);
     } else {
       setSignIn(false);
+      setBox({});
+      setInput('');
+      setUser({});
     }
     setRoute(curRoute);
   };
@@ -79,6 +82,7 @@ function App() {
 
   const displayFaceBox = (boxObject) => {
     setBox(boxObject);
+    return true;
   };
 
   const onInputChange = (event) => {
@@ -90,18 +94,19 @@ function App() {
       .then(response => response.json())
       .then(data => {
         displayFaceBox(calculateFaceLocation(data));
-        if(data) {
+        if(data){
           fetch('http://localhost:3030/image', {
             method: 'put',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
               id: user.id
             })
-            .then(res => res.json())
-            .then(count => {
-              setUser({...user, entries: count});
-            })
-          });
+          })
+          .then(res => res.json())
+          .then(count => {
+            setUser({...user, entries: count});
+          })
+          .catch(console.log);
         }
       })
       .catch(error => console.log('error', error));
