@@ -29,7 +29,7 @@ export default function SignUp({ loadUser, onRouteChange }) {
         })
         .then(res => res.json())
         .then(user => {
-            if(user) {
+            if(user.id) {
                 loadUser(user);
                 onRouteChange("home");
             }

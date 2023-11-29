@@ -32,39 +32,7 @@ function App() {
     setRoute(curRoute);
   };
 
-  const clarifaiRequest = (imageURL) => {
-    const PAT = '98e42e8a626b46ffa9ededb80f51c34c';
-    const USER_ID = 'b9f8884cvz0m';
-    const APP_ID = 'smart-brain';
-    const IMAGE_URL = imageURL;
-
-    const raw = JSON.stringify({
-      "user_app_id": {
-        "user_id": USER_ID,
-        "app_id": APP_ID
-      },
-      "inputs": [
-        {
-          "data": {
-            "image": {
-              "url": IMAGE_URL
-            }
-          }
-        }
-      ]
-    });
-
-    const requestOptions = {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Key ' + PAT
-      },
-      body: raw
-    };
-
-    return requestOptions;
-  };
+  
 
   const calculateFaceLocation = (data) => {
     const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
@@ -90,7 +58,13 @@ function App() {
   };
 
   const onPictureSubmit = () => {
-    fetch("https://api.clarifai.com/v2/models/face-detection/outputs", clarifaiRequest(input))
+    fetch('http://localhost:3030/imageurl', {
+            method: 'post',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+              input: input
+            })
+          })
       .then(response => response.json())
       .then(data => {
         displayFaceBox(calculateFaceLocation(data));
