@@ -58,7 +58,7 @@ function App() {
   };
 
   const onPictureSubmit = () => {
-    fetch('http://localhost:3030/imageurl', {
+    fetch('https://smart-brain-api-mm49.onrender.com/imageurl', {
             method: 'post',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
@@ -69,7 +69,7 @@ function App() {
       .then(data => {
         displayFaceBox(calculateFaceLocation(data));
         if(data){
-          fetch('http://localhost:3030/image', {
+          fetch('https://smart-brain-api-mm49.onrender.com/image', {
             method: 'put',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
