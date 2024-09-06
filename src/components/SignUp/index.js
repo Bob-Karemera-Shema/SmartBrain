@@ -18,7 +18,7 @@ export default function SignUp({ loadUser, onRouteChange }) {
     };
 
     const onSubmitSignup = () => {
-        fetch("https://smart-brain-api-mm49.onrender.com/signup", {
+        fetch("http://localhost:3030/signup", {
             method: 'post',
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({

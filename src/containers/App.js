@@ -12,7 +12,7 @@ import SignUp from '../components/SignUp';
 function App() {
   const [user, setUser] = useState({});
   const [input, setInput] = useState('');
-  const [box, setBox] = useState({});
+  const [boxes, setBox] = useState([]);
   const [route, setRoute] = useState("signin");
   const [isSignedIn, setSignIn] = useState(false);
 
@@ -32,24 +32,26 @@ function App() {
     setRoute(curRoute);
   };
 
-  
 
-  const calculateFaceLocation = (data) => {
-    const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
-    const image = document.getElementById("input-image");
-    const width = Number(image.width);
-    const height = Number(image.height);
 
-    return {
-      leftCol: clarifaiFace.left_col * width,
-      topRow: clarifaiFace.top_row * height,
-      rightCol: width - (clarifaiFace.right_col * width),
-      bottomRow: height - (clarifaiFace.bottom_row * height)
-    };
+  const calculateFaceLocations = (data) => {
+    return data.outputs[0].data.regions.map(face => {
+      const clarifaiFace = face.region_info.bounding_box;
+      const image = document.getElementById("input-image");
+      const width = Number(image.width);
+      const height = Number(image.height);
+
+      return {
+        leftCol: clarifaiFace.left_col * width,
+        topRow: clarifaiFace.top_row * height,
+        rightCol: width - (clarifaiFace.right_col * width),
+        bottomRow: height - (clarifaiFace.bottom_row * height)
+      };
+    });
   };
 
-  const displayFaceBox = (boxObject) => {
-    setBox(boxObject);
+  const displayFaceBoxes = (boxObjects) => {
+    setBox(boxObjects);
     return true;
   };
 
@@ -58,29 +60,29 @@ function App() {
   };
 
   const onPictureSubmit = () => {
-    fetch('https://smart-brain-api-mm49.onrender.com/imageurl', {
-            method: 'post',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-              input: input
-            })
-          })
+    fetch('http://localhost:3030/imageurl', {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        input: input
+      })
+    })
       .then(response => response.json())
       .then(data => {
-        displayFaceBox(calculateFaceLocation(data));
-        if(data){
-          fetch('https://smart-brain-api-mm49.onrender.com/image', {
+        displayFaceBoxes(calculateFaceLocations(data));
+        if (data) {
+          fetch('http://localhost:3030/image', {
             method: 'put',
-            headers: {'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               id: user.id
             })
           })
-          .then(res => res.json())
-          .then(count => {
-            setUser({...user, entries: count});
-          })
-          .catch(console.log);
+            .then(res => res.json())
+            .then(count => {
+              setUser({ ...user, entries: count });
+            })
+            .catch(console.log);
         }
       })
       .catch(error => console.log('error', error));
@@ -94,13 +96,13 @@ function App() {
       {
         route === "home" ?
           <div>
-            <Rank name={user.name} entries={user.entries}/>
+            <Rank name={user.name} entries={user.entries} />
             <ImageLinkForm onInputChange={onInputChange} onPictureSubmit={onPictureSubmit} />
-            <FaceRecognition box={box} imageURL={input} />
+            <FaceRecognition boxes={boxes} imageURL={input} />
           </div> :
           (
-          route === "signin" ? <SignIn onRouteChange={onRouteChange} loadUser={loadUser} /> : 
-            <SignUp onRouteChange={onRouteChange} loadUser={loadUser} />
+            route === "signin" ? <SignIn onRouteChange={onRouteChange} loadUser={loadUser} /> :
+              <SignUp onRouteChange={onRouteChange} loadUser={loadUser} />
           )
       }
     </div>
