@@ -12,7 +12,7 @@ import SignUp from '../components/SignUp';
 function App() {
   const [user, setUser] = useState({});
   const [input, setInput] = useState('');
-  const [boxes, setBox] = useState([]);
+  const [boxes, setBoxes] = useState([]);
   const [route, setRoute] = useState("signin");
   const [isSignedIn, setSignIn] = useState(false);
 
@@ -25,7 +25,7 @@ function App() {
       setSignIn(true);
     } else {
       setSignIn(false);
-      setBox({});
+      setBoxes([]);
       setInput('');
       setUser({});
     }
@@ -51,7 +51,7 @@ function App() {
   };
 
   const displayFaceBoxes = (boxObjects) => {
-    setBox(boxObjects);
+    setBoxes(boxObjects);
     return true;
   };
 
