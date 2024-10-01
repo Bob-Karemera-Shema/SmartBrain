@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import './App.css';
 import Navigation from '../components/Navigation';
 import Logo from '../components/Logo';
 import ImageLinkForm from '../components/ImageLinkForm';
@@ -8,13 +7,15 @@ import ParticlesContainer from '../components/Particles';
 import FaceRecognition from '../components/FaceRecognition';
 import SignIn from '../components/SignIn';
 import SignUp from '../components/SignUp';
+import Modal from '../components/Modal/Modal';
+import './App.css';
 
 function App() {
   const [user, setUser] = useState({});
   const [input, setInput] = useState('');
   const [boxes, setBoxes] = useState([]);
-  const [route, setRoute] = useState("signin");
-  const [isSignedIn, setSignIn] = useState(false);
+  const [route, setRoute] = useState("home");
+  const [isSignedIn, setSignIn] = useState(true);
 
   const loadUser = (user) => {
     setUser(user);
