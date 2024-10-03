@@ -8,14 +8,16 @@ import FaceRecognition from '../components/FaceRecognition';
 import SignIn from '../components/SignIn';
 import SignUp from '../components/SignUp';
 import Modal from '../components/Modal/Modal';
+import Profile from '../components/Profile/Profile';
 import './App.css';
 
 function App() {
   const [user, setUser] = useState({});
   const [input, setInput] = useState('');
   const [boxes, setBoxes] = useState([]);
-  const [route, setRoute] = useState("home");
-  const [isSignedIn, setSignIn] = useState(true);
+  const [route, setRoute] = useState("signin");
+  const [isSignedIn, setSignIn] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const loadUser = (user) => {
     setUser(user);
@@ -89,10 +91,20 @@ function App() {
       .catch(error => console.log('error', error));
   };
 
+  const toggleModal = () => {
+    setIsProfileOpen(prevState => !prevState);
+  }
+
   return (
     <div className="App">
       <ParticlesContainer className="particles" />
-      <Navigation signedIn={isSignedIn} onRouteChange={onRouteChange} />
+      <Navigation signedIn={isSignedIn} onRouteChange={onRouteChange} toggleModal={toggleModal} />
+      {
+        isProfileOpen &&
+        <Modal>
+          <Profile isProfileOpen={isProfileOpen} toggleModal={toggleModal} user={user} />
+        </Modal>
+      }
       <Logo />
       {
         route === "home" ?

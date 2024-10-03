@@ -6,7 +6,7 @@ import {
     DropdownItem,
 } from 'reactstrap';
 
-export default function ProfileIcon({ onRouteChange }) {
+export default function ProfileIcon({ onRouteChange, toggleModal }) {
     const [dropdownOpen, setDropdownOpen] = React.useState(false);
     const toggle = () => setDropdownOpen((prevState) => !prevState);
 
@@ -23,7 +23,7 @@ export default function ProfileIcon({ onRouteChange }) {
                             className="br-100 ba h3 w3 dib" alt="avatar" />
                     </DropdownToggle>
                     <DropdownMenu right className='b--transparent shadow-5' style={{marginTop: '20px', backgroundColor: 'rgba(255, 255, 255, 0.5'}}>
-                        <DropdownItem>View Profile</DropdownItem>
+                        <DropdownItem onClick={toggleModal}>View Profile</DropdownItem>
                         <DropdownItem onClick={() => onRouteChange("signin")}>Sign Out</DropdownItem>
                     </DropdownMenu>
                 </Dropdown>
